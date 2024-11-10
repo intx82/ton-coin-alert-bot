@@ -124,11 +124,13 @@ def set_price_alert(update: Update, context: CallbackContext) -> None:
 
 def check_price(context: CallbackContext):
     config = load_config()
-    # Remove 'botid' from config, if it exists
-    config = {k: v for k, v in config.items() if k != 'botid'}
+    original_config = config.copy()  # Copy to preserve 'botid'
+
+    # Exclude 'botid' when processing user IDs
+    user_configs = {k: v for k, v in config.items() if k != 'botid'}
 
     coins_to_check = set()
-    for thresholds in config.values():
+    for thresholds in user_configs.values():
         coins_to_check.update(thresholds.keys())
 
     # Fetch current prices for all required coins
@@ -138,12 +140,17 @@ def check_price(context: CallbackContext):
         if price is not None:
             coin_prices[coin_id] = price
 
-    for chat_id, coins in config.items():
+    for chat_id, coins in user_configs.items():
         for coin_id, thresholds in coins.items():
             if coin_id not in coin_prices:
                 continue
             price = coin_prices[coin_id]
-            coin_name = 'TON' if coin_id == 'the-open-network' else 'Bitcoin' if coin_id == 'bitcoin' else coin_id
+            if coin_id == 'the-open-network':
+                coin_name = 'TON'
+            elif coin_id == 'bitcoin':
+                coin_name = 'Bitcoin'
+            else:
+                coin_name = coin_id.capitalize()
 
             messages = []
             if 'above' in thresholds and price > thresholds['above']:
@@ -157,18 +164,26 @@ def check_price(context: CallbackContext):
             for msg in messages:
                 context.bot.send_message(chat_id=chat_id, text=msg)
 
-        # Clean up empty coins
+        # Clean up empty coins for the user
         coins_to_delete = [coin_id for coin_id, thresholds in coins.items() if not thresholds]
         for coin_id in coins_to_delete:
             del coins[coin_id]
 
-    # Clean up empty chat_ids
-    chat_ids_to_delete = [chat_id for chat_id, coins in config.items() if not coins]
+    # Clean up users with no coins left
+    chat_ids_to_delete = [chat_id for chat_id, coins in user_configs.items() if not coins]
     for chat_id in chat_ids_to_delete:
-        del config[chat_id]
+        del user_configs[chat_id]
 
-    # Save updated config
-    save_config(config)
+    # Update the original config with the modified user configs
+    for chat_id in user_configs:
+        original_config[chat_id] = user_configs[chat_id]
+    for chat_id in chat_ids_to_delete:
+        if chat_id in original_config:
+            del original_config[chat_id]
+
+    # Save the updated config, including 'botid'
+    save_config(original_config)
+
 
 
 # Main function
