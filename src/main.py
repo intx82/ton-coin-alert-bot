@@ -122,9 +122,11 @@ def set_price_alert(update: Update, context: CallbackContext) -> None:
     except ValueError:
         update.message.reply_text('Invalid price. Please enter a valid number.')
 
-# Check price function
 def check_price(context: CallbackContext):
     config = load_config()
+    # Remove 'botid' from config, if it exists
+    config = {k: v for k, v in config.items() if k != 'botid'}
+
     coins_to_check = set()
     for thresholds in config.values():
         coins_to_check.update(thresholds.keys())
@@ -141,22 +143,33 @@ def check_price(context: CallbackContext):
             if coin_id not in coin_prices:
                 continue
             price = coin_prices[coin_id]
-            coin_name = 'TON' if coin_id == 'the-open-network' else 'Bitcoin'
+            coin_name = 'TON' if coin_id == 'the-open-network' else 'Bitcoin' if coin_id == 'bitcoin' else coin_id
 
+            messages = []
             if 'above' in thresholds and price > thresholds['above']:
-                context.bot.send_message(chat_id=chat_id, text=f'{coin_name} price is above ${thresholds["above"]:.2f}: Current price is ${price:.2f}')
-                del config[chat_id][coin_id]['above']
-
+                messages.append(f'{coin_name} price is above ${thresholds["above"]:.2f}: Current price is ${price:.2f}')
+                del thresholds['above']
             if 'below' in thresholds and price < thresholds['below']:
-                context.bot.send_message(chat_id=chat_id, text=f'{coin_name} price is below ${thresholds["below"]:.2f}: Current price is ${price:.2f}')
-                del config[chat_id][coin_id]['below']
-            
-            # Clean up if no thresholds remain
-            if not config[chat_id][coin_id]:
-                del config[chat_id][coin_id]
-        if not config[chat_id]:
-            del config[chat_id]
+                messages.append(f'{coin_name} price is below ${thresholds["below"]:.2f}: Current price is ${price:.2f}')
+                del thresholds['below']
+
+            # Send messages
+            for msg in messages:
+                context.bot.send_message(chat_id=chat_id, text=msg)
+
+        # Clean up empty coins
+        coins_to_delete = [coin_id for coin_id, thresholds in coins.items() if not thresholds]
+        for coin_id in coins_to_delete:
+            del coins[coin_id]
+
+    # Clean up empty chat_ids
+    chat_ids_to_delete = [chat_id for chat_id, coins in config.items() if not coins]
+    for chat_id in chat_ids_to_delete:
+        del config[chat_id]
+
+    # Save updated config
     save_config(config)
+
 
 # Main function
 def main():
