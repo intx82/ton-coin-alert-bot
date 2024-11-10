@@ -21,20 +21,20 @@ def save_config(config):
     with open(CONFIG_FILE, 'w') as file:
         json.dump(config, file, indent=4)
 
-# Function to get TON price
-def get_ton_price():
+# Function to get coin price
+def get_price(coin_id):
     url = 'https://api.coingecko.com/api/v3/simple/price'
     params = {
-        'ids': 'the-open-network',
+        'ids': coin_id,
         'vs_currencies': 'usd'
     }
 
     try:
         response = requests.get(url, params=params)
-        response.raise_for_status()  # Raise an exception for HTTP errors
+        response.raise_for_status()
         data = response.json()
-        ton_price = data['the-open-network']['usd']
-        return ton_price
+        price = data[coin_id]['usd']
+        return price
     except requests.exceptions.HTTPError as http_err:
         print(f'HTTP error occurred: {http_err}')
         return None
@@ -44,14 +44,12 @@ def get_ton_price():
 
 # Start command handler
 def start(update: Update, context: CallbackContext) -> None:
-    chat_id = str(update.message.chat_id)
     keyboard = [
-        [InlineKeyboardButton("Get TON Price", callback_data='get_price')],
-        [InlineKeyboardButton("Set Above Price Alert", callback_data='set_above')],
-        [InlineKeyboardButton("Set Below Price Alert", callback_data='set_below')]
+        [InlineKeyboardButton("TON", callback_data='select_coin_ton')],
+        [InlineKeyboardButton("Bitcoin", callback_data='select_coin_bitcoin')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    update.message.reply_text('Press a button to set price alerts or get the current TON price.', reply_markup=reply_markup)
+    update.message.reply_text('Please select a coin:', reply_markup=reply_markup)
 
 # Button callback handler
 def button(update: Update, context: CallbackContext) -> None:
@@ -59,39 +57,67 @@ def button(update: Update, context: CallbackContext) -> None:
     query.answer()
     chat_id = str(query.message.chat_id)
 
-    if query.data == 'get_price':
-        ton_price = get_ton_price()
-        if ton_price is not None:
-            query.edit_message_text(text=f'TON price: ${ton_price:.2f} USD')
+    # Handle coin selection
+    if query.data == 'select_coin_ton':
+        context.user_data['coin'] = 'the-open-network'
+        context.user_data['coin_name'] = 'TON'
+    elif query.data == 'select_coin_bitcoin':
+        context.user_data['coin'] = 'bitcoin'
+        context.user_data['coin_name'] = 'Bitcoin'
+
+    if query.data in ['select_coin_ton', 'select_coin_bitcoin']:
+        coin_name = context.user_data['coin_name']
+        keyboard = [
+            [InlineKeyboardButton(f"Get {coin_name} Price", callback_data='get_price')],
+            [InlineKeyboardButton(f"Set Above Price Alert for {coin_name}", callback_data='set_above')],
+            [InlineKeyboardButton(f"Set Below Price Alert for {coin_name}", callback_data='set_below')]
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        query.edit_message_text(text=f'Selected {coin_name}. Choose an option:', reply_markup=reply_markup)
+    elif query.data == 'get_price':
+        coin_id = context.user_data.get('coin')
+        coin_name = context.user_data.get('coin_name')
+        if not coin_id:
+            query.edit_message_text(text='Please select a coin first by sending /start')
+            return
+        price = get_price(coin_id)
+        if price is not None:
+            query.edit_message_text(text=f'{coin_name} price: ${price:.2f} USD')
         else:
-            query.edit_message_text(text='Failed to retrieve the TON price.')
+            query.edit_message_text(text=f'Failed to retrieve the {coin_name} price.')
     elif query.data == 'set_above':
-        query.message.reply_text('Please send the price above which you want to get notified:')
-        context.user_data['setting_above'] = chat_id
+        coin_name = context.user_data.get('coin_name')
+        query.message.reply_text(f'Please send the price above which you want to get notified for {coin_name}:')
+        context.user_data['setting_above'] = True
     elif query.data == 'set_below':
-        query.message.reply_text('Please send the price below which you want to get notified:')
-        context.user_data['setting_below'] = chat_id
+        coin_name = context.user_data.get('coin_name')
+        query.message.reply_text(f'Please send the price below which you want to get notified for {coin_name}:')
+        context.user_data['setting_below'] = True
 
 # Set price alert handler
 def set_price_alert(update: Update, context: CallbackContext) -> None:
     chat_id = str(update.message.chat_id)
     config = load_config()
+    coin_id = context.user_data.get('coin')
+    coin_name = context.user_data.get('coin_name')
+
+    if not coin_id:
+        update.message.reply_text('Please select a coin first by sending /start')
+        return
 
     try:
         price = float(update.message.text)
         if 'setting_above' in context.user_data:
-            if chat_id not in config:
-                config[chat_id] = {}
-            config[chat_id]['above'] = price
-            update.message.reply_text(f'You will be notified if the TON price goes above ${price:.2f}')
+            config.setdefault(chat_id, {}).setdefault(coin_id, {})
+            config[chat_id][coin_id]['above'] = price
+            update.message.reply_text(f'You will be notified if the {coin_name} price goes above ${price:.2f}')
             del context.user_data['setting_above']
         elif 'setting_below' in context.user_data:
-            if chat_id not in config:
-                config[chat_id] = {}
-            config[chat_id]['below'] = price
-            update.message.reply_text(f'You will be notified if the TON price goes below ${price:.2f}')
+            config.setdefault(chat_id, {}).setdefault(coin_id, {})
+            config[chat_id][coin_id]['below'] = price
+            update.message.reply_text(f'You will be notified if the {coin_name} price goes below ${price:.2f}')
             del context.user_data['setting_below']
-
+        
         save_config(config)
     except ValueError:
         update.message.reply_text('Invalid price. Please enter a valid number.')
@@ -99,23 +125,40 @@ def set_price_alert(update: Update, context: CallbackContext) -> None:
 # Check price function
 def check_price(context: CallbackContext):
     config = load_config()
-    ton_price = get_ton_price()
-    if ton_price is None:
-        return
+    coins_to_check = set()
+    for thresholds in config.values():
+        coins_to_check.update(thresholds.keys())
 
-    print('Current price: ', ton_price)
+    # Fetch current prices for all required coins
+    coin_prices = {}
+    for coin_id in coins_to_check:
+        price = get_price(coin_id)
+        if price is not None:
+            coin_prices[coin_id] = price
 
-    for chat_id, thresholds in config.items():
-        if 'above' in thresholds and ton_price > thresholds['above']:
-            context.bot.send_message(chat_id=chat_id, text=f'TON price is above ${thresholds["above"]:.2f}: Current price is ${ton_price:.2f}')
-            del config[chat_id]['above']
+    for chat_id, coins in config.items():
+        for coin_id, thresholds in coins.items():
+            if coin_id not in coin_prices:
+                continue
+            price = coin_prices[coin_id]
+            coin_name = 'TON' if coin_id == 'the-open-network' else 'Bitcoin'
 
-        if 'below' in thresholds and ton_price < thresholds['below']:
-            context.bot.send_message(chat_id=chat_id, text=f'TON price is below ${thresholds["below"]:.2f}: Current price is ${ton_price:.2f}')
-            del config[chat_id]['below']
+            if 'above' in thresholds and price > thresholds['above']:
+                context.bot.send_message(chat_id=chat_id, text=f'{coin_name} price is above ${thresholds["above"]:.2f}: Current price is ${price:.2f}')
+                del config[chat_id][coin_id]['above']
 
-        save_config(config)
+            if 'below' in thresholds and price < thresholds['below']:
+                context.bot.send_message(chat_id=chat_id, text=f'{coin_name} price is below ${thresholds["below"]:.2f}: Current price is ${price:.2f}')
+                del config[chat_id][coin_id]['below']
+            
+            # Clean up if no thresholds remain
+            if not config[chat_id][coin_id]:
+                del config[chat_id][coin_id]
+        if not config[chat_id]:
+            del config[chat_id]
+    save_config(config)
 
+# Main function
 def main():
     config = load_config()
     # Replace 'YOUR_TOKEN_HERE' with your bot's token
