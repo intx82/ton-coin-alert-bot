@@ -46,7 +46,9 @@ def get_price(coin_id):
 def start(update: Update, context: CallbackContext) -> None:
     keyboard = [
         [InlineKeyboardButton("TON", callback_data='select_coin_ton')],
-        [InlineKeyboardButton("Bitcoin", callback_data='select_coin_bitcoin')]
+        [InlineKeyboardButton("Bitcoin", callback_data='select_coin_bitcoin')],
+        [InlineKeyboardButton("SUI", callback_data='select_coin_sui')],
+        [InlineKeyboardButton("XRP", callback_data='select_coin_xrp')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     update.message.reply_text('Please select a coin:', reply_markup=reply_markup)
@@ -64,8 +66,14 @@ def button(update: Update, context: CallbackContext) -> None:
     elif query.data == 'select_coin_bitcoin':
         context.user_data['coin'] = 'bitcoin'
         context.user_data['coin_name'] = 'Bitcoin'
+    elif query.data == 'select_coin_sui':
+        context.user_data['coin'] = 'sui'
+        context.user_data['coin_name'] = 'SUI'
+    elif query.data == 'select_coin_xrp':
+        context.user_data['coin'] = 'binance-peg-xrp'
+        context.user_data['coin_name'] = 'XRP'
 
-    if query.data in ['select_coin_ton', 'select_coin_bitcoin']:
+    if query.data in ['select_coin_ton', 'select_coin_bitcoin','select_coin_sui','select_coin_xrp']:
         coin_name = context.user_data['coin_name']
         keyboard = [
             [InlineKeyboardButton(f"Get {coin_name} Price", callback_data='get_price')],
@@ -149,6 +157,10 @@ def check_price(context: CallbackContext):
                 coin_name = 'TON'
             elif coin_id == 'bitcoin':
                 coin_name = 'Bitcoin'
+            elif coin_id == 'sui':
+                coin_name = 'SUI'
+            elif coin_id == 'binance-peg-xrp':
+                coin_name = 'XRP'
             else:
                 coin_name = coin_id.capitalize()
 
