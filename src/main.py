@@ -1,3 +1,4 @@
+import datetime
 import json
 import os
 import requests
@@ -23,14 +24,22 @@ def save_config(config):
 
 # Function to get coin price
 def get_price(coin_id):
+    config = load_config()
     url = 'https://api.coingecko.com/api/v3/simple/price'
     params = {
         'ids': coin_id,
         'vs_currencies': 'usd'
     }
 
+    headers = {
+        "accept": "application/json"
+    }
+    
+    if "geckoapi" in config.keys():
+        headers["x-cg-api-key"] = config["geckoapi"]
+
     try:
-        response = requests.get(url, params=params)
+        response = requests.get(url, params=params, headers=headers)
         response.raise_for_status()
         data = response.json()
         price = data[coin_id]['usd']
@@ -196,12 +205,180 @@ def check_price(context: CallbackContext):
     # Save the updated config, including 'botid'
     save_config(original_config)
 
+def buy(update: Update, context: CallbackContext) -> None:
+    chat_id = str(update.message.chat_id)
+    coin_id = context.user_data.get('coin')
+    coin_name = context.user_data.get('coin_name')
+
+    if not coin_id:
+        update.message.reply_text('❌ Please select a coin first with /start')
+        return
+
+    args = context.args
+    if len(args) != 1:
+        update.message.reply_text('Usage: /buy <amount_usd>\nExample: /buy 100')
+        return
+
+    try:
+        amount_usd = float(context.args[0])
+    except ValueError:
+        update.message.reply_text('Invalid amount. Please enter a numeric value.\nExample: /buy 100')
+        return
+
+    try:
+        current_price = get_price(coin_id)
+
+        if current_price is None:
+            update.message.reply_text(f'Failed to fetch current {coin_name} price.')
+            return
+
+        quantity = amount_usd / current_price
+        timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        config = load_config()
+        purchase_entry = {
+            "coin": coin_name,
+            "coin_id": coin_id,
+            "amount_usd": amount_usd,
+            "price_per_coin": current_price,
+            "quantity": quantity,
+            "timestamp": timestamp
+        }
+
+        config.setdefault('purchases', {}).setdefault(chat_id, []).append(purchase_entry)
+        save_config(config)
+
+        update.message.reply_text(
+            f"✅ Logged Buy:\n"
+            f"Coin: {coin_name}\n"
+            f"Amount: ${amount_usd:.2f}\n"
+            f"Price: ${current_price:.2f}\n"
+            f"Quantity: {quantity:.4f}\n"
+            f"Date: {timestamp} UTC"
+        )
+
+    except ValueError:
+        update.message.reply_text('Usage: /buy <amount_in_usd>\nExample: /buy 100')
+
+
+def sell(update: Update, context: CallbackContext) -> None:
+    if update is None or update.message is None:
+        print('Update is none')
+        return
+
+    chat_id = str(update.message.chat_id)
+    coin_id = context.user_data.get('coin')
+    coin_name = context.user_data.get('coin_name')  # explicitly set coin_name here
+
+    if not coin_id or not coin_name:
+        update.message.reply_text('❌ Select a coin first using /start.')
+        return
+    
+    if len(context.args) != 1:
+        update.message.reply_text('Usage: /sell <quantity>\nExample: /sell 10')
+        return
+    
+    
+
+    try:
+        config = load_config()
+        user_purchases = config.get('purchases', {}).get(chat_id, [])
+        coin_purchases = [p for p in user_purchases if p['coin_id'] == coin_id]
+        total_available = sum(p['quantity'] for p in coin_purchases)
+
+        try:
+            if str(context.args[0]).lower() == 'max':
+                sell_quantity = total_available
+            else:
+                sell_quantity = float(context.args[0])
+        except ValueError:
+            update.message.reply_text('❌ Invalid quantity. Enter a numeric value.\nExample: /sell 10')
+            return
+        
+        total_available = sum(p['quantity'] for p in coin_purchases)
+        if sell_quantity > total_available:
+            update.message.reply_text(f"❌ You don't have enough {coin_name}. You have {total_available:.4f}, but tried selling {sell_quantity:.4f}.")
+            return
+
+        current_price = get_price(coin_id)
+        if current_price is None:
+            update.message.reply_text('❌ Failed to retrieve the current price. Try again later.')
+            return
+
+        remaining_to_sell = sell_quantity
+
+        # FIFO logic
+        new_purchases = []
+        for p in coin_purchases:
+            if remaining_to_sell >= p['quantity']:
+                remaining_to_sell -= p['quantity']
+                continue  # remove fully sold entry
+            else:
+                p['quantity'] -= remaining_to_sell
+                remaining_to_sell = 0
+                new_purchases.append(p)
+
+            if remaining_to_sell == 0:
+                new_purchases_after_current = coin_purchases[coin_purchases.index(p)+1:]
+                new_purchases_list = new_purchases_after_current
+                new_purchases_list.extend(new_purchases)
+                break
+
+        # Update and save the configuration
+        config['purchases'][chat_id] = [p for p in user_purchases if p['coin_id'] != coin_id] + new_purchases
+        save_config(config)
+
+        timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+        update.message.reply_text(
+            f"🔴 Sold {sell_quantity:.4f} {coin_name}\n"
+            f"At price: ${current_price:.2f} per coin\n"
+            f"Total: ${sell_quantity * current_price:.2f}\n"
+            f"Date: {timestamp} UTC"
+        )
+
+    except (ValueError, IndexError):
+        update.message.reply_text('Invalid input. Usage: /sell <quantity>\nExample: /sell 10')
+
+
+
+def history(update: Update, context: CallbackContext) -> None:
+    chat_id = str(update.message.chat_id)
+    config = load_config()
+    purchases = config.get('purchases', {}).get(chat_id, [])
+    
+    if not purchases:
+        update.message.reply_text("🗒 Your purchase diary is empty.")
+        return
+    
+    history_text = "📗 Your Purchase Diary:\n\n"
+    holdings_summary = {}
+
+    for entry in purchases:
+        coin_name = entry['coin']  # explicitly use coin_name
+        quantity = entry['quantity']
+        history_text += (
+            f"Coin: {coin_name}\n"
+            f"Bought for: ${entry['amount_usd']:.2f}\n"
+            f"Price per coin: ${entry['price_per_coin']:.2f}\n"
+            f"Quantity: {quantity:.4f}\n"
+            f"Date: {entry['timestamp']} UTC\n\n"
+        )
+
+        # Summarize holdings
+        holdings_summary[coin_name] = holdings_summary.get(coin_name, 0) + quantity
+
+    holdings_text = "📊 **Current Holdings:**\n"
+    for coin, qty in holdings_summary.items():
+        holdings_text += f"{coin}: {qty:.4f}\n"
+
+    update.message.reply_text(history_text + holdings_text)
+
 
 
 # Main function
 def main():
     config = load_config()
-    # Replace 'YOUR_TOKEN_HERE' with your bot's token
     updater = Updater(config["botid"], use_context=True)
 
     dispatcher = updater.dispatcher
@@ -209,8 +386,10 @@ def main():
     dispatcher.add_handler(CommandHandler('start', start))
     dispatcher.add_handler(CallbackQueryHandler(button))
     dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, set_price_alert))
+    dispatcher.add_handler(CommandHandler('buy', buy))
+    dispatcher.add_handler(CommandHandler('sell', sell))
+    dispatcher.add_handler(CommandHandler('history', history))
 
-    # Set up the price checking job
     scheduler = BackgroundScheduler(timezone=utc)
     trigger = IntervalTrigger(minutes=1, timezone=utc)
     scheduler.add_job(check_price, trigger, args=[dispatcher])

@@ -1,10 +1,11 @@
 # Telegram bot to watch TON coin price
 
-** This bot was created by chatgpt, it may not work **
+# Coin alert bot
 
 This readme has been created also from chatgpt comment. Only one change:
 
-1. Change `BOT-ID` in `config.json`
+1. Change `botid` in `config.json`
+2. Retrieve on coingecko demo key and put into `geckoapi` in `config.json`
 
 ## ChatGPT comments
 
