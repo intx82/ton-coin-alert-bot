@@ -51,13 +51,16 @@ def update_all_prices():
     except Exception as e:
         print(f"Error fetching coin prices: {e}")
 
-def get_price(coin_id):
+def get_price(coin_id, get_missing = True):
     global COIN_PRICE_CACHE
     coin_info = COIN_PRICE_CACHE.get(coin_id)
     if coin_info:
         return coin_info['usd']
     else:
         print(f"No cached price for {coin_id}.")
+        if get_missing:
+            update_all_prices()
+            return get_price(coin_id, False)
         return None
 
 # Start command handler
@@ -130,6 +133,7 @@ def set_price_alert(update: Update, context: CallbackContext) -> None:
     config = load_config()
     coin_id = context.user_data.get('coin')
     coin_name = context.user_data.get('coin_name')
+    user_observations = config.get('observation', {})
 
     if not coin_id:
         update.message.reply_text('Please select a coin first by sending /start')
@@ -138,13 +142,13 @@ def set_price_alert(update: Update, context: CallbackContext) -> None:
     try:
         price = float(update.message.text)
         if 'setting_above' in context.user_data:
-            config.setdefault(chat_id, {}).setdefault(coin_id, {})
-            config[chat_id][coin_id]['above'] = price
+            user_observations.setdefault(chat_id, {}).setdefault(coin_id, {})
+            user_observations[chat_id][coin_id]['above'] = price
             update.message.reply_text(f'You will be notified if the {coin_name} price goes above ${price:.2f}')
             del context.user_data['setting_above']
         elif 'setting_below' in context.user_data:
-            config.setdefault(chat_id, {}).setdefault(coin_id, {})
-            config[chat_id][coin_id]['below'] = price
+            user_observations.setdefault(chat_id, {}).setdefault(coin_id, {})
+            user_observations[chat_id][coin_id]['below'] = price
             update.message.reply_text(f'You will be notified if the {coin_name} price goes below ${price:.2f}')
             del context.user_data['setting_below']
         
@@ -191,13 +195,19 @@ def check_price(context: CallbackContext):
     coins_available = config.get("coins_available", {})
     user_configs = {k: v for k, v in config.items() if k not in ['botid', 'coins_available', 'purchases']}
     user_purchases = config.get('purchases', {})
+    user_observations = config.get('observation', {})
 
     if not COIN_PRICE_CACHE:
-        print("⚠️ Price cache empty, skipping alert check.")
-        return
+        update_all_prices()
+        if not COIN_PRICE_CACHE:
+            print("⚠️ Price cache empty, skipping alert check.")
+            return
 
     # Existing upper/lower price alerts logic unchanged
-    for chat_id, coins in user_configs.items():
+    for chat_id, coins in user_observations.items():
+        if not isinstance(coins, dict):
+            continue
+
         for coin_id, thresholds in coins.items():
             coin_info = COIN_PRICE_CACHE.get(coin_id)
             if not coin_info:
@@ -208,10 +218,10 @@ def check_price(context: CallbackContext):
 
             messages = []
             if 'above' in thresholds and price > thresholds['above']:
-                messages.append(f'{coin_name} price is above ${thresholds["above"]:.2f}: Current price is ${price:.2f}')
+                messages.append(f'⚠️ {coin_name} price is above ${thresholds["above"]:.2f} 📈: Current price is ${price:.2f}')
                 del thresholds['above']
             if 'below' in thresholds and price < thresholds['below']:
-                messages.append(f'{coin_name} price is below ${thresholds["below"]:.2f}: Current price is ${price:.2f}')
+                messages.append(f'⚠️ {coin_name} price is below ${thresholds["below"]:.2f} 📉: Current price is ${price:.2f}')
                 del thresholds['below']
 
             for msg in messages:
