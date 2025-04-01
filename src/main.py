@@ -2,7 +2,7 @@ import datetime
 import json
 import os
 import requests
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, constants
 from telegram.ext import Updater, CommandHandler, CallbackQueryHandler, MessageHandler, Filters, CallbackContext
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
@@ -76,17 +76,20 @@ def start(update: Update, context: CallbackContext) -> None:
         [InlineKeyboardButton(name, callback_data=f'select_coin_{coin_id}')]
         for coin_id, name in coins_available.items()
     ]
+    keyboard.insert(0, [InlineKeyboardButton('Show wallet diary', callback_data='history')])
     reply_markup = InlineKeyboardMarkup(keyboard)
-    update.message.reply_text('Please select a coin:', reply_markup=reply_markup)
+    update.message.reply_text('Please select a coin or command:', reply_markup=reply_markup)
 
 # Button callback handler
-def button(update: Update, context: CallbackContext) -> None:
+def button_cb(update: Update, context: CallbackContext) -> None:
     query = update.callback_query
     query.answer()
     config = load_config()
     coins_available = config.get("coins_available", {})
 
-    chat_id = str(query.message.chat_id)
+    if query.data == 'history':
+        history(update, context)
+        return
 
     # Dynamic coin selection handling
     if query.data.startswith('select_coin_'):
@@ -407,7 +410,7 @@ def sell(update: Update, context: CallbackContext) -> None:
 
 
 def history(update: Update, context: CallbackContext) -> None:
-    chat_id = str(update.message.chat_id)
+    chat_id = str(update.message.chat_id if update.message else update.effective_user.id)
     config = load_config()
     user_purchases = config.get('purchases', {}).get(chat_id, {})
 
@@ -473,7 +476,10 @@ def history(update: Update, context: CallbackContext) -> None:
     )
 
     final_message = history_text + overall_summary
-    update.message.reply_markdown(final_message)
+    if update.message:
+        update.message.reply_markdown(final_message)
+    else:
+        update.callback_query.edit_message_text(final_message, parse_mode=constants.PARSEMODE_MARKDOWN)
 
 
 
@@ -540,7 +546,7 @@ def main():
     dispatcher = updater.dispatcher
 
     dispatcher.add_handler(CommandHandler('start', start))
-    dispatcher.add_handler(CallbackQueryHandler(button))
+    dispatcher.add_handler(CallbackQueryHandler(button_cb))
     dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, set_price_alert))
     dispatcher.add_handler(CommandHandler('buy', buy))
     dispatcher.add_handler(CommandHandler('sell', sell))
