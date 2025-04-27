@@ -31,3 +31,40 @@ Interact with the bot:
     The bot will notify you if the TON price goes above or below the set thresholds and save these settings in a JSON config file.
 
 This setup will store user-specific price thresholds in a JSON file and notify users when the TON price crosses these thresholds.
+
+## Filtering output
+
+I prefer to use script with `nohup`, so after left a `nohup.out` file, which is contains lifetime prices of selected coins.
+To convert log into json, might be used next command:
+
+```bash
+cat nohup.out | python3 ./src/log_parser.py > log.json
+```
+
+Which saves log.json with application lifetime coin prices. 
+
+```json
+[
+  {
+    "ts": "2025-03-20T14:29:02.937834",
+    "price": {
+      "binancecoin": {
+        "usd": 628.52
+      },
+      "bitcoin": {
+        "usd": 86423
+      },
+      "bitget-token": {
+        "usd": 4.73
+      }
+    }
+  },
+...
+]
+```
+
+To filter and achieve coin prices per day could be used a next trick:
+
+```bash
+jq '[.[] | select(.ts | startswith("2025-04-15")) | {ts, bitcoin: .price.bitcoin.usd}]' log.json > 2025-04-15.json
+```

@@ -1,0 +1,2438 @@
+[
+    {
+        "ts": "2025-04-26T17:32:41.486687",
+        "price": {
+            "binancecoin": {
+                "usd": 607.92
+            },
+            "bitcoin": {
+                "usd": 94377
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.670392
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.84
+            },
+            "the-open-network": {
+                "usd": 3.28
+            },
+            "wrapped-solana": {
+                "usd": 149.23
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T17:33:41.675207",
+        "price": {
+            "binancecoin": {
+                "usd": 608.07
+            },
+            "bitcoin": {
+                "usd": 94387
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.669751
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.77
+            },
+            "the-open-network": {
+                "usd": 3.28
+            },
+            "wrapped-solana": {
+                "usd": 149.23
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T17:34:41.533808",
+        "price": {
+            "binancecoin": {
+                "usd": 608.07
+            },
+            "bitcoin": {
+                "usd": 94387
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.669751
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.77
+            },
+            "the-open-network": {
+                "usd": 3.28
+            },
+            "wrapped-solana": {
+                "usd": 149.23
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T17:35:41.818637",
+        "price": {
+            "binancecoin": {
+                "usd": 608.1
+            },
+            "bitcoin": {
+                "usd": 94377
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.669308
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.69
+            },
+            "the-open-network": {
+                "usd": 3.28
+            },
+            "wrapped-solana": {
+                "usd": 149.29
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T17:36:41.486233",
+        "price": {
+            "binancecoin": {
+                "usd": 608.1
+            },
+            "bitcoin": {
+                "usd": 94377
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.669308
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.69
+            },
+            "the-open-network": {
+                "usd": 3.28
+            },
+            "wrapped-solana": {
+                "usd": 149.29
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T17:37:14.238746",
+        "price": {
+            "binancecoin": {
+                "usd": 608.13
+            },
+            "bitcoin": {
+                "usd": 94366
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.669503
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.63
+            },
+            "the-open-network": {
+                "usd": 3.28
+            },
+            "wrapped-solana": {
+                "usd": 149.17
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T17:38:14.112429",
+        "price": {
+            "binancecoin": {
+                "usd": 608.13
+            },
+            "bitcoin": {
+                "usd": 94366
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.669503
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.63
+            },
+            "the-open-network": {
+                "usd": 3.28
+            },
+            "wrapped-solana": {
+                "usd": 149.17
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T17:39:14.227650",
+        "price": {
+            "binancecoin": {
+                "usd": 608.14
+            },
+            "bitcoin": {
+                "usd": 94361
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.669471
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.64
+            },
+            "the-open-network": {
+                "usd": 3.27
+            },
+            "wrapped-solana": {
+                "usd": 149.24
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T17:40:14.184720",
+        "price": {
+            "binancecoin": {
+                "usd": 608.14
+            },
+            "bitcoin": {
+                "usd": 94361
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.669471
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.64
+            },
+            "the-open-network": {
+                "usd": 3.27
+            },
+            "wrapped-solana": {
+                "usd": 149.24
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T17:41:14.207199",
+        "price": {
+            "binancecoin": {
+                "usd": 608.25
+            },
+            "bitcoin": {
+                "usd": 94333
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.669621
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.35
+            },
+            "the-open-network": {
+                "usd": 3.27
+            },
+            "wrapped-solana": {
+                "usd": 149.15
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T17:42:14.081910",
+        "price": {
+            "binancecoin": {
+                "usd": 608.25
+            },
+            "bitcoin": {
+                "usd": 94333
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.669621
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.35
+            },
+            "the-open-network": {
+                "usd": 3.27
+            },
+            "wrapped-solana": {
+                "usd": 149.15
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T17:43:14.228773",
+        "price": {
+            "binancecoin": {
+                "usd": 608.25
+            },
+            "bitcoin": {
+                "usd": 94320
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.669702
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3317.01
+            },
+            "the-open-network": {
+                "usd": 3.27
+            },
+            "wrapped-solana": {
+                "usd": 149.09
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T17:44:14.106592",
+        "price": {
+            "binancecoin": {
+                "usd": 608.25
+            },
+            "bitcoin": {
+                "usd": 94320
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.669702
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3317.01
+            },
+            "the-open-network": {
+                "usd": 3.27
+            },
+            "wrapped-solana": {
+                "usd": 149.09
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T17:44:44.453859",
+        "price": {
+            "binancecoin": {
+                "usd": 608.22
+            },
+            "bitcoin": {
+                "usd": 94317
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.669784
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3317.97
+            },
+            "the-open-network": {
+                "usd": 3.27
+            },
+            "wrapped-solana": {
+                "usd": 149.2
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T17:45:44.321450",
+        "price": {
+            "binancecoin": {
+                "usd": 608.22
+            },
+            "bitcoin": {
+                "usd": 94317
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.669784
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3317.97
+            },
+            "the-open-network": {
+                "usd": 3.27
+            },
+            "wrapped-solana": {
+                "usd": 149.2
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T17:47:28.590050",
+        "price": {
+            "binancecoin": {
+                "usd": 608.23
+            },
+            "bitcoin": {
+                "usd": 94298
+            },
+            "bitget-token": {
+                "usd": 4.41
+            },
+            "curve-dao-token": {
+                "usd": 0.670201
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.65
+            },
+            "the-open-network": {
+                "usd": 3.27
+            },
+            "wrapped-solana": {
+                "usd": 149.22
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T17:48:28.468781",
+        "price": {
+            "binancecoin": {
+                "usd": 608.23
+            },
+            "bitcoin": {
+                "usd": 94298
+            },
+            "bitget-token": {
+                "usd": 4.41
+            },
+            "curve-dao-token": {
+                "usd": 0.670201
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.65
+            },
+            "the-open-network": {
+                "usd": 3.27
+            },
+            "wrapped-solana": {
+                "usd": 149.22
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T17:49:28.634325",
+        "price": {
+            "binancecoin": {
+                "usd": 608.05
+            },
+            "bitcoin": {
+                "usd": 94309
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.670467
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.81
+            },
+            "the-open-network": {
+                "usd": 3.28
+            },
+            "wrapped-solana": {
+                "usd": 149.26
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T17:50:28.450580",
+        "price": {
+            "binancecoin": {
+                "usd": 608.05
+            },
+            "bitcoin": {
+                "usd": 94309
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.670467
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.81
+            },
+            "the-open-network": {
+                "usd": 3.28
+            },
+            "wrapped-solana": {
+                "usd": 149.26
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T17:51:28.573831",
+        "price": {
+            "binancecoin": {
+                "usd": 608.34
+            },
+            "bitcoin": {
+                "usd": 94348
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.671213
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3317.1
+            },
+            "the-open-network": {
+                "usd": 3.28
+            },
+            "wrapped-solana": {
+                "usd": 149.35
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T17:52:28.453017",
+        "price": {
+            "binancecoin": {
+                "usd": 608.34
+            },
+            "bitcoin": {
+                "usd": 94348
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.671213
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3317.1
+            },
+            "the-open-network": {
+                "usd": 3.28
+            },
+            "wrapped-solana": {
+                "usd": 149.35
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T17:53:28.647534",
+        "price": {
+            "binancecoin": {
+                "usd": 608.85
+            },
+            "bitcoin": {
+                "usd": 94366
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.672483
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.39
+            },
+            "the-open-network": {
+                "usd": 3.28
+            },
+            "wrapped-solana": {
+                "usd": 149.39
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T17:54:28.455131",
+        "price": {
+            "binancecoin": {
+                "usd": 608.85
+            },
+            "bitcoin": {
+                "usd": 94366
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.672483
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.39
+            },
+            "the-open-network": {
+                "usd": 3.28
+            },
+            "wrapped-solana": {
+                "usd": 149.39
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T17:55:28.590687",
+        "price": {
+            "binancecoin": {
+                "usd": 608.78
+            },
+            "bitcoin": {
+                "usd": 94381
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.673047
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.48
+            },
+            "the-open-network": {
+                "usd": 3.28
+            },
+            "wrapped-solana": {
+                "usd": 149.4
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T17:56:28.458822",
+        "price": {
+            "binancecoin": {
+                "usd": 608.78
+            },
+            "bitcoin": {
+                "usd": 94381
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.673047
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.48
+            },
+            "the-open-network": {
+                "usd": 3.28
+            },
+            "wrapped-solana": {
+                "usd": 149.4
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T17:57:29.249428",
+        "price": {
+            "binancecoin": {
+                "usd": 608.75
+            },
+            "bitcoin": {
+                "usd": 94391
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.673772
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3315.69
+            },
+            "the-open-network": {
+                "usd": 3.28
+            },
+            "wrapped-solana": {
+                "usd": 149.39
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T17:58:29.119623",
+        "price": {
+            "binancecoin": {
+                "usd": 608.75
+            },
+            "bitcoin": {
+                "usd": 94391
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.673772
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3315.69
+            },
+            "the-open-network": {
+                "usd": 3.28
+            },
+            "wrapped-solana": {
+                "usd": 149.39
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T17:59:29.255222",
+        "price": {
+            "binancecoin": {
+                "usd": 608.76
+            },
+            "bitcoin": {
+                "usd": 94397
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.673775
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.26
+            },
+            "the-open-network": {
+                "usd": 3.28
+            },
+            "wrapped-solana": {
+                "usd": 149.47
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:00:29.133386",
+        "price": {
+            "binancecoin": {
+                "usd": 608.76
+            },
+            "bitcoin": {
+                "usd": 94397
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.673775
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.26
+            },
+            "the-open-network": {
+                "usd": 3.28
+            },
+            "wrapped-solana": {
+                "usd": 149.47
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:01:29.272098",
+        "price": {
+            "binancecoin": {
+                "usd": 608.8
+            },
+            "bitcoin": {
+                "usd": 94397
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.672737
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3315.91
+            },
+            "the-open-network": {
+                "usd": 3.28
+            },
+            "wrapped-solana": {
+                "usd": 149.4
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:03:05.287711",
+        "price": {
+            "binancecoin": {
+                "usd": 608.85
+            },
+            "bitcoin": {
+                "usd": 94390
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.671944
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.49
+            },
+            "the-open-network": {
+                "usd": 3.29
+            },
+            "wrapped-solana": {
+                "usd": 149.4
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:03:15.739361",
+        "price": {
+            "binancecoin": {
+                "usd": 608.85
+            },
+            "bitcoin": {
+                "usd": 94390
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.671944
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.49
+            },
+            "the-open-network": {
+                "usd": 3.29
+            },
+            "wrapped-solana": {
+                "usd": 149.4
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:04:06.424737",
+        "price": {
+            "binancecoin": {
+                "usd": 608.89
+            },
+            "bitcoin": {
+                "usd": 94385
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.671935
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.9
+            },
+            "the-open-network": {
+                "usd": 3.29
+            },
+            "wrapped-solana": {
+                "usd": 149.25
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:05:19.316577",
+        "price": {
+            "binancecoin": {
+                "usd": 608.89
+            },
+            "bitcoin": {
+                "usd": 94385
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.671935
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.9
+            },
+            "the-open-network": {
+                "usd": 3.29
+            },
+            "wrapped-solana": {
+                "usd": 149.25
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:06:06.492412",
+        "price": {
+            "binancecoin": {
+                "usd": 608.95
+            },
+            "bitcoin": {
+                "usd": 94375
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.671057
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.8
+            },
+            "the-open-network": {
+                "usd": 3.29
+            },
+            "wrapped-solana": {
+                "usd": 149.31
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:07:06.328175",
+        "price": {
+            "binancecoin": {
+                "usd": 608.95
+            },
+            "bitcoin": {
+                "usd": 94375
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.671057
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.8
+            },
+            "the-open-network": {
+                "usd": 3.29
+            },
+            "wrapped-solana": {
+                "usd": 149.31
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:08:06.423160",
+        "price": {
+            "binancecoin": {
+                "usd": 609.09
+            },
+            "bitcoin": {
+                "usd": 94368
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.670476
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.96
+            },
+            "the-open-network": {
+                "usd": 3.29
+            },
+            "wrapped-solana": {
+                "usd": 149.29
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:08:22.323927",
+        "price": {
+            "binancecoin": {
+                "usd": 609.09
+            },
+            "bitcoin": {
+                "usd": 94368
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.670476
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.96
+            },
+            "the-open-network": {
+                "usd": 3.29
+            },
+            "wrapped-solana": {
+                "usd": 149.29
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:09:06.374342",
+        "price": {
+            "binancecoin": {
+                "usd": 609.09
+            },
+            "bitcoin": {
+                "usd": 94368
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.670476
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.96
+            },
+            "the-open-network": {
+                "usd": 3.29
+            },
+            "wrapped-solana": {
+                "usd": 149.29
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:10:06.514381",
+        "price": {
+            "binancecoin": {
+                "usd": 609.04
+            },
+            "bitcoin": {
+                "usd": 94349
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.670138
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.86
+            },
+            "the-open-network": {
+                "usd": 3.29
+            },
+            "wrapped-solana": {
+                "usd": 149.29
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:11:06.409465",
+        "price": {
+            "binancecoin": {
+                "usd": 609.04
+            },
+            "bitcoin": {
+                "usd": 94349
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.670138
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.86
+            },
+            "the-open-network": {
+                "usd": 3.29
+            },
+            "wrapped-solana": {
+                "usd": 149.29
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:12:06.526967",
+        "price": {
+            "binancecoin": {
+                "usd": 608.92
+            },
+            "bitcoin": {
+                "usd": 94328
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.669781
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.39
+            },
+            "the-open-network": {
+                "usd": 3.29
+            },
+            "wrapped-solana": {
+                "usd": 149.17
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:13:06.367609",
+        "price": {
+            "binancecoin": {
+                "usd": 608.92
+            },
+            "bitcoin": {
+                "usd": 94328
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.669781
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.39
+            },
+            "the-open-network": {
+                "usd": 3.29
+            },
+            "wrapped-solana": {
+                "usd": 149.17
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:14:06.487234",
+        "price": {
+            "binancecoin": {
+                "usd": 608.92
+            },
+            "bitcoin": {
+                "usd": 94318
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.669899
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3317.44
+            },
+            "the-open-network": {
+                "usd": 3.3
+            },
+            "wrapped-solana": {
+                "usd": 149.12
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:15:06.367424",
+        "price": {
+            "binancecoin": {
+                "usd": 608.92
+            },
+            "bitcoin": {
+                "usd": 94318
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.669899
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3317.44
+            },
+            "the-open-network": {
+                "usd": 3.3
+            },
+            "wrapped-solana": {
+                "usd": 149.12
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:16:06.502662",
+        "price": {
+            "binancecoin": {
+                "usd": 608.74
+            },
+            "bitcoin": {
+                "usd": 94312
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.669934
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.45
+            },
+            "the-open-network": {
+                "usd": 3.3
+            },
+            "wrapped-solana": {
+                "usd": 149.12
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:17:06.359218",
+        "price": {
+            "binancecoin": {
+                "usd": 608.74
+            },
+            "bitcoin": {
+                "usd": 94312
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.669934
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.45
+            },
+            "the-open-network": {
+                "usd": 3.3
+            },
+            "wrapped-solana": {
+                "usd": 149.12
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:18:06.497099",
+        "price": {
+            "binancecoin": {
+                "usd": 608.46
+            },
+            "bitcoin": {
+                "usd": 94314
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.669816
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3317.0
+            },
+            "the-open-network": {
+                "usd": 3.3
+            },
+            "wrapped-solana": {
+                "usd": 149.12
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:19:06.362043",
+        "price": {
+            "binancecoin": {
+                "usd": 608.46
+            },
+            "bitcoin": {
+                "usd": 94314
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.669816
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3317.0
+            },
+            "the-open-network": {
+                "usd": 3.3
+            },
+            "wrapped-solana": {
+                "usd": 149.12
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:20:06.487890",
+        "price": {
+            "binancecoin": {
+                "usd": 608.48
+            },
+            "bitcoin": {
+                "usd": 94307
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.669455
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.67
+            },
+            "the-open-network": {
+                "usd": 3.3
+            },
+            "wrapped-solana": {
+                "usd": 149.12
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:21:06.380983",
+        "price": {
+            "binancecoin": {
+                "usd": 608.48
+            },
+            "bitcoin": {
+                "usd": 94307
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.669455
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.67
+            },
+            "the-open-network": {
+                "usd": 3.3
+            },
+            "wrapped-solana": {
+                "usd": 149.12
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:22:06.491793",
+        "price": {
+            "binancecoin": {
+                "usd": 608.51
+            },
+            "bitcoin": {
+                "usd": 94318
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.669918
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.91
+            },
+            "the-open-network": {
+                "usd": 3.3
+            },
+            "wrapped-solana": {
+                "usd": 149.07
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:23:06.373426",
+        "price": {
+            "binancecoin": {
+                "usd": 608.51
+            },
+            "bitcoin": {
+                "usd": 94318
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.669918
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.91
+            },
+            "the-open-network": {
+                "usd": 3.3
+            },
+            "wrapped-solana": {
+                "usd": 149.07
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:24:06.497006",
+        "price": {
+            "binancecoin": {
+                "usd": 608.61
+            },
+            "bitcoin": {
+                "usd": 94325
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.671205
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.83
+            },
+            "the-open-network": {
+                "usd": 3.3
+            },
+            "wrapped-solana": {
+                "usd": 149.19
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:25:06.386425",
+        "price": {
+            "binancecoin": {
+                "usd": 608.61
+            },
+            "bitcoin": {
+                "usd": 94325
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.671205
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.83
+            },
+            "the-open-network": {
+                "usd": 3.3
+            },
+            "wrapped-solana": {
+                "usd": 149.19
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:26:06.703052",
+        "price": {
+            "binancecoin": {
+                "usd": 608.63
+            },
+            "bitcoin": {
+                "usd": 94324
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.671827
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.57
+            },
+            "the-open-network": {
+                "usd": 3.31
+            },
+            "wrapped-solana": {
+                "usd": 149.15
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:27:06.360122",
+        "price": {
+            "binancecoin": {
+                "usd": 608.63
+            },
+            "bitcoin": {
+                "usd": 94324
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.671827
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.57
+            },
+            "the-open-network": {
+                "usd": 3.31
+            },
+            "wrapped-solana": {
+                "usd": 149.15
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:28:06.502718",
+        "price": {
+            "binancecoin": {
+                "usd": 608.79
+            },
+            "bitcoin": {
+                "usd": 94343
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.672163
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.73
+            },
+            "the-open-network": {
+                "usd": 3.31
+            },
+            "wrapped-solana": {
+                "usd": 149.28
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:29:06.372656",
+        "price": {
+            "binancecoin": {
+                "usd": 608.79
+            },
+            "bitcoin": {
+                "usd": 94343
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.672163
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.73
+            },
+            "the-open-network": {
+                "usd": 3.31
+            },
+            "wrapped-solana": {
+                "usd": 149.28
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:30:06.475615",
+        "price": {
+            "binancecoin": {
+                "usd": 608.74
+            },
+            "bitcoin": {
+                "usd": 94353
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.67286
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.48
+            },
+            "the-open-network": {
+                "usd": 3.31
+            },
+            "wrapped-solana": {
+                "usd": 149.43
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:31:06.352669",
+        "price": {
+            "binancecoin": {
+                "usd": 608.74
+            },
+            "bitcoin": {
+                "usd": 94353
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.67286
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.48
+            },
+            "the-open-network": {
+                "usd": 3.31
+            },
+            "wrapped-solana": {
+                "usd": 149.43
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:32:06.491410",
+        "price": {
+            "binancecoin": {
+                "usd": 608.87
+            },
+            "bitcoin": {
+                "usd": 94359
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.673271
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.39
+            },
+            "the-open-network": {
+                "usd": 3.31
+            },
+            "wrapped-solana": {
+                "usd": 149.44
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:33:06.367750",
+        "price": {
+            "binancecoin": {
+                "usd": 608.87
+            },
+            "bitcoin": {
+                "usd": 94359
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.673271
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.39
+            },
+            "the-open-network": {
+                "usd": 3.31
+            },
+            "wrapped-solana": {
+                "usd": 149.44
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:34:06.485877",
+        "price": {
+            "binancecoin": {
+                "usd": 608.53
+            },
+            "bitcoin": {
+                "usd": 94349
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.6731
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.21
+            },
+            "the-open-network": {
+                "usd": 3.31
+            },
+            "wrapped-solana": {
+                "usd": 149.31
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:35:06.370730",
+        "price": {
+            "binancecoin": {
+                "usd": 608.53
+            },
+            "bitcoin": {
+                "usd": 94349
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.6731
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.21
+            },
+            "the-open-network": {
+                "usd": 3.31
+            },
+            "wrapped-solana": {
+                "usd": 149.31
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:36:06.518441",
+        "price": {
+            "binancecoin": {
+                "usd": 608.71
+            },
+            "bitcoin": {
+                "usd": 94343
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.672158
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.19
+            },
+            "the-open-network": {
+                "usd": 3.32
+            },
+            "wrapped-solana": {
+                "usd": 149.32
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:37:06.352345",
+        "price": {
+            "binancecoin": {
+                "usd": 608.71
+            },
+            "bitcoin": {
+                "usd": 94343
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.672158
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.19
+            },
+            "the-open-network": {
+                "usd": 3.32
+            },
+            "wrapped-solana": {
+                "usd": 149.32
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:38:06.483700",
+        "price": {
+            "binancecoin": {
+                "usd": 608.66
+            },
+            "bitcoin": {
+                "usd": 94308
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.670593
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3315.72
+            },
+            "the-open-network": {
+                "usd": 3.32
+            },
+            "wrapped-solana": {
+                "usd": 149.41
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:39:06.378551",
+        "price": {
+            "binancecoin": {
+                "usd": 608.66
+            },
+            "bitcoin": {
+                "usd": 94308
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.670593
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3315.72
+            },
+            "the-open-network": {
+                "usd": 3.32
+            },
+            "wrapped-solana": {
+                "usd": 149.41
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:40:06.509646",
+        "price": {
+            "binancecoin": {
+                "usd": 608.63
+            },
+            "bitcoin": {
+                "usd": 94284
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.670234
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3315.91
+            },
+            "the-open-network": {
+                "usd": 3.32
+            },
+            "wrapped-solana": {
+                "usd": 149.26
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:41:06.392859",
+        "price": {
+            "binancecoin": {
+                "usd": 608.63
+            },
+            "bitcoin": {
+                "usd": 94284
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.670234
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3315.91
+            },
+            "the-open-network": {
+                "usd": 3.32
+            },
+            "wrapped-solana": {
+                "usd": 149.26
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:42:06.482763",
+        "price": {
+            "binancecoin": {
+                "usd": 608.45
+            },
+            "bitcoin": {
+                "usd": 94260
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.66922
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.53
+            },
+            "the-open-network": {
+                "usd": 3.32
+            },
+            "wrapped-solana": {
+                "usd": 149.12
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:43:06.364623",
+        "price": {
+            "binancecoin": {
+                "usd": 608.45
+            },
+            "bitcoin": {
+                "usd": 94260
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.66922
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.53
+            },
+            "the-open-network": {
+                "usd": 3.32
+            },
+            "wrapped-solana": {
+                "usd": 149.12
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:44:06.701337",
+        "price": {
+            "binancecoin": {
+                "usd": 608.22
+            },
+            "bitcoin": {
+                "usd": 94231
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.667949
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.57
+            },
+            "the-open-network": {
+                "usd": 3.32
+            },
+            "wrapped-solana": {
+                "usd": 148.92
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:45:06.369375",
+        "price": {
+            "binancecoin": {
+                "usd": 608.22
+            },
+            "bitcoin": {
+                "usd": 94231
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.667949
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.57
+            },
+            "the-open-network": {
+                "usd": 3.32
+            },
+            "wrapped-solana": {
+                "usd": 148.92
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:46:06.489165",
+        "price": {
+            "binancecoin": {
+                "usd": 608.19
+            },
+            "bitcoin": {
+                "usd": 94193
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.667332
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.92
+            },
+            "the-open-network": {
+                "usd": 3.31
+            },
+            "wrapped-solana": {
+                "usd": 148.85
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:47:06.367978",
+        "price": {
+            "binancecoin": {
+                "usd": 608.19
+            },
+            "bitcoin": {
+                "usd": 94193
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.667332
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.92
+            },
+            "the-open-network": {
+                "usd": 3.31
+            },
+            "wrapped-solana": {
+                "usd": 148.85
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:48:06.495733",
+        "price": {
+            "binancecoin": {
+                "usd": 608.13
+            },
+            "bitcoin": {
+                "usd": 94216
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.666927
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.82
+            },
+            "the-open-network": {
+                "usd": 3.31
+            },
+            "wrapped-solana": {
+                "usd": 149.07
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:49:06.381903",
+        "price": {
+            "binancecoin": {
+                "usd": 608.13
+            },
+            "bitcoin": {
+                "usd": 94216
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.666927
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.82
+            },
+            "the-open-network": {
+                "usd": 3.31
+            },
+            "wrapped-solana": {
+                "usd": 149.07
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:50:06.513300",
+        "price": {
+            "binancecoin": {
+                "usd": 608.21
+            },
+            "bitcoin": {
+                "usd": 94275
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.66761
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.73
+            },
+            "the-open-network": {
+                "usd": 3.32
+            },
+            "wrapped-solana": {
+                "usd": 149.04
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:51:06.367937",
+        "price": {
+            "binancecoin": {
+                "usd": 608.21
+            },
+            "bitcoin": {
+                "usd": 94275
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.66761
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.73
+            },
+            "the-open-network": {
+                "usd": 3.32
+            },
+            "wrapped-solana": {
+                "usd": 149.04
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:52:06.491629",
+        "price": {
+            "binancecoin": {
+                "usd": 608.28
+            },
+            "bitcoin": {
+                "usd": 94288
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.667831
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.71
+            },
+            "the-open-network": {
+                "usd": 3.32
+            },
+            "wrapped-solana": {
+                "usd": 149.19
+            }
+        }
+    },
+    {
+        "ts": "2025-04-26T18:53:06.361535",
+        "price": {
+            "binancecoin": {
+                "usd": 608.28
+            },
+            "bitcoin": {
+                "usd": 94288
+            },
+            "bitget-token": {
+                "usd": 4.42
+            },
+            "curve-dao-token": {
+                "usd": 0.667831
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.71
+            },
+            "the-open-network": {
+                "usd": 3.32
+            },
+            "wrapped-solana": {
+                "usd": 149.19
+            }
+        }
+    },
+    {
+        "ts": "2025-04-27T02:32:21.874646",
+        "price": {
+            "binancecoin": {
+                "usd": 607.91
+            },
+            "bitcoin": {
+                "usd": 94929
+            },
+            "bitget-token": {
+                "usd": 4.44
+            },
+            "curve-dao-token": {
+                "usd": 0.682386
+            },
+            "ripple": {
+                "usd": 2.2
+            },
+            "tether-gold": {
+                "usd": 3316.81
+            },
+            "the-open-network": {
+                "usd": 3.37
+            },
+            "wrapped-solana": {
+                "usd": 149.9
+            }
+        }
+    }
+]

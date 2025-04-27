@@ -1,15 +1,19 @@
 import datetime
 import json
 import os
+import textwrap
 import requests
+import trend
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, constants
 from telegram.ext import Updater, CommandHandler, CallbackQueryHandler, MessageHandler, Filters, CallbackContext
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 from pytz import utc
 
+
 CONFIG_FILE = 'config.json'
 COIN_PRICE_CACHE = {}
+MONTHLY_PRICE_CACHE = list()
 
 # Load the config file
 def load_config():
@@ -24,7 +28,7 @@ def save_config(config):
         json.dump(config, file, indent=4)
 
 def update_all_prices():
-    global COIN_PRICE_CACHE
+    global COIN_PRICE_CACHE, MONTHLY_PRICE_CACHE
     config = load_config()
     coins_available = config.get("coins_available", {})
     
@@ -47,12 +51,18 @@ def update_all_prices():
         response = requests.get(url, params=params, headers=headers)
         response.raise_for_status()
         COIN_PRICE_CACHE = response.json()
-        print(f"Prices updated at {datetime.datetime.utcnow().isoformat()} UTC -> {COIN_PRICE_CACHE}")
+        print(f"Prices updated at {datetime.datetime.now().isoformat()} UTC -> {COIN_PRICE_CACHE}")
+        if len(MONTHLY_PRICE_CACHE) >= 60 * 24 * 31:
+            MONTHLY_PRICE_CACHE = MONTHLY_PRICE_CACHE[1:]
+        MONTHLY_PRICE_CACHE.append({'ts': datetime.datetime.now().isoformat(), 'price': COIN_PRICE_CACHE})
+        with open('monthly.json', 'wt') as fd:
+            json.dump(MONTHLY_PRICE_CACHE, fd, indent=4)
+
     except Exception as e:
         print(f"Error fetching coin prices: {e}")
 
 def get_price(coin_id, get_missing = True):
-    global COIN_PRICE_CACHE
+    global COIN_PRICE_CACHE, MONTHLY_PRICE_CACHE
     coin_info = COIN_PRICE_CACHE.get(coin_id)
     if coin_info:
         return coin_info['usd']
@@ -193,7 +203,7 @@ def reset_notification_flags(chat_id, coin_id):
     save_config(config)
 
 def check_price(context: CallbackContext):
-    global COIN_PRICE_CACHE
+    global COIN_PRICE_CACHE, MONTHLY_PRICE_CACHE
     config = load_config()
     coins_available = config.get("coins_available", {})
     user_configs = {k: v for k, v in config.items() if k not in ['botid', 'coins_available', 'purchases']}
@@ -271,9 +281,78 @@ def check_price(context: CallbackContext):
                     context.bot.send_message(chat_id=chat_id, text=message)
                     purchase["notified"] = True  # Mark as notified
 
-                # Reset notification if back within ±5% range
-                elif -5 < profit_loss_percent < 5 and purchase.get("notified", False):
+                # Reset notification if back within ±5% range and ±1% hysteresis
+                elif profit_loss_percent < 4 and profit_loss_percent > -4 and purchase.get("notified", False): # 1% hysteresis
                     purchase["notified"] = False  # Reset flag
+
+            df = [ {'ts': p['ts'], 'price': p['price'].get(coin_id,{}).get('usd',0) } for p in MONTHLY_PRICE_CACHE[-(24 * 60):] ] # last 24h
+            df = trend.convert_json(df)
+
+            slope_sec, intercept = trend.calc_theil_sen(df)
+
+            # 3) VWAP on the entire 5-min data
+            df["vwap"] = trend.calc_vwap(df)
+
+            # 4) ATR from resampled data
+            df["atr"] = trend.calc_atr_pct_with_resample(df, period=14, freq='1h')
+
+            # 5) Summaries
+            open_price = df["price"].iloc[0]
+            close_price = df["price"].iloc[-1]
+            pct_change = (close_price - open_price)/open_price * 100.0
+            min_idx = df["price"].idxmin()
+            max_idx = df["price"].idxmax()
+
+            slope_hour = slope_sec * 3600.0
+            slope_perc_hour = slope_hour / open_price * 100.0
+
+            summary = {
+                "open_price": float(open_price),
+                "close_price": float(close_price),
+                "min_price": float(df["price"].iloc[min_idx]),
+                "min_time": df["ts"].iloc[min_idx].isoformat(),
+                "max_price": float(df["price"].iloc[max_idx]),
+                "max_time": df["ts"].iloc[max_idx].isoformat(),
+                "percent_change": float(pct_change),
+                "theil_sen_slope_sec": float(slope_sec),
+                "theil_sen_slope_hour": float(slope_hour),
+                "theil_sen_slope_perc_hour": float(slope_perc_hour),
+            }
+
+            # 6) Signals
+            signals = trend.detect_signals(df, slope_sec, intercept)
+
+            notify = user_observations[chat_id].get(coin_id, {}).get('signal_notify', 0)
+            if (signals['mean_reversion'] or signals['momentum_filter'] or summary['percent_change'] > 2) and  notify == 0:
+                message = textwrap.dedent(f"""
+                        ☔ **{coin_name} Signals Alert:**
+                        Open price: ${summary['open_price']:.2f}
+                        Close price: ${summary['close_price']:.2f}
+                        Change: {summary['percent_change']:+.2f}%
+
+                        Day high: ${summary['max_price']:.2f}   ({summary['max_time']})
+                        Day low:  ${summary['min_price']:.2f}   ({summary['min_time']})
+
+                        Theil-Sen slope/hour: {summary['theil_sen_slope_hour']:+.2f} USD/h
+                                            ({summary['theil_sen_slope_perc_hour']:+.4f}%/h)
+
+                        VWAP (full period):   ${df['vwap'].iloc[-1]:.2f}
+                        Last ATR(1h,14):  {df['atr'].iloc[-1]:.2f}%
+
+                        Signals:
+                        mean_reversion = {signals['mean_reversion']}
+                        momentum_filter = {signals['momentum_filter']}
+                        stop_loss = {signals['stop_loss']}
+                        position_size_multiplier = {signals['position_size_multiplier']}
+
+                        """).strip()
+                context.bot.send_message(chat_id=chat_id, text=message)
+                if coin_id not in user_observations[chat_id].keys():
+                    user_observations[chat_id][coin_id] = {}
+
+                user_observations[chat_id][coin_id]['signal_notify'] = 3 * 60
+            elif notify > 0:
+                user_observations[chat_id][coin_id]['signal_notify'] -= 1
 
     save_config(config)
 
@@ -303,7 +382,7 @@ def buy(update: Update, context: CallbackContext) -> None:
         return
 
     quantity = amount_usd / current_price
-    timestamp = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
+    timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S UTC")
 
     config = load_config()
     coin_purchases = config.setdefault('purchases', {}).setdefault(chat_id, {}).setdefault(coin_id, [])
@@ -400,7 +479,7 @@ def sell(update: Update, context: CallbackContext) -> None:
 
     save_config(config)
     reset_notification_flags(chat_id, coin_id)
-    timestamp = datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S UTC')
+    timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S UTC')
     update.message.reply_markdown(
         f"🔴 **Sold {sell_quantity:.4f} {coin_name} (LIFO)**\n"
         f"Price: ${current_price:.2f} per coin\n"
@@ -540,7 +619,12 @@ def removecoin(update: Update, context: CallbackContext):
 
 # Main function
 def main():
+    global MONTHLY_PRICE_CACHE
     config = load_config()
+    if os.path.exists('monthly.json'):
+        with open('monthly.json', 'rt') as fd:
+            MONTHLY_PRICE_CACHE = json.load(fd)
+
     updater = Updater(config["botid"], use_context=True)
 
     dispatcher = updater.dispatcher
