@@ -1,292 +1,342 @@
-#!/usr/bin/env python3
-"""
-btc_trend.py ― extended daily analytics + Theil-Sen slope + signals
--------------------------------------------------------------------
-Key points:
-1. We keep everything (price, slope, VWAP, signals) at the raw 5-min resolution.
-2. For ATR specifically, we first roll up 5-min data into 1-hour bars, compute
-   real high/low-based ATR(14), then forward-fill back onto the 5-min timestamps.
-3. This ensures ATR actually reflects intrabar range rather than being 0.
+"""OHLCV market analysis used by the Telegram bot."""
 
-Usage:
-  ./btc_trend.py -f data_5min.json -o out.png
-  ./btc_trend.py --summary-json < data_5min.json
-"""
-import sys, json, argparse, pathlib, textwrap
+__version__ = 'rev14'
+
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 
-###############################################################################
-# Helper functions
-###############################################################################
 
-def load_json(handle) -> dict:
-    """
-    Reads raw JSON → normalizes columns to at least:
-        df["ts"] = Timestamps
-        df["price"] = 'close' or 'Coin' or 'price' or something
-        df["volume"] (optional, if provided)
-    Sorts by ts ascending.
-    """
-    raw = json.load(handle)
-    if not isinstance(raw, list) or len(raw) == 0:
-        raise ValueError("Expected a non-empty JSON array.")
-    return raw
-
-def convert_json(raw) -> pd.DataFrame:
+def convert_candles(raw) -> pd.DataFrame:
+    """Normalize 1-minute OHLCV candle rows from SQLite."""
     df = pd.json_normalize(raw)
-    # Try columns in fallback order
-    for candidate in ["close","price"]:
-        if candidate in df.columns:
-            df["price"] = df[candidate]
-            break
-    if "price" not in df.columns:
-        raise ValueError("No 'price', 'close' column found in JSON.")
+    required = ['ts', 'open', 'high', 'low', 'close']
+    missing = [name for name in required if name not in df.columns]
+    if missing:
+        raise ValueError(f'Missing OHLC fields: {missing}')
 
-    # volume optional
-    if "volume" not in df.columns:
-        df["volume"] = np.nan
+    df['ts'] = pd.to_datetime(df['ts'], errors='coerce', utc=True)
+    for name in ('open', 'high', 'low', 'close', 'volume', 'vwap'):
+        if name not in df.columns:
+            df[name] = 0.0 if name == 'volume' else np.nan
+        df[name] = pd.to_numeric(df[name], errors='coerce')
 
-    if "ts" not in df.columns:
-        raise ValueError("No 'ts' column found in JSON.")
-    df["ts"] = pd.to_datetime(df["ts"], errors="coerce")
-    df.sort_values("ts", inplace=True)
+    df['price'] = df['close']
+    df.sort_values('ts', inplace=True)
+    df.dropna(subset=['ts', 'open', 'high', 'low', 'close'], inplace=True)
     df.reset_index(drop=True, inplace=True)
     return df
 
 
-def calc_theil_sen(df: pd.DataFrame) -> tuple[float, float]:
-    """
-    Returns (slope, intercept) using Theil-Sen (median of pairwise slopes).
-      slope (float): price units / second
-      intercept (float): median of (y_i - slope * t_i)
-    O(N^2) naive approach, fine for a few hundred points.
-    """
-    t = (df["ts"] - df["ts"].iloc[0]).dt.total_seconds().values
-    y = df["price"].values
+def calc_candle_vwap(df: pd.DataFrame) -> pd.Series:
+    """Return volume-weighted price across real OHLCV candles."""
+    if df.empty:
+        return pd.Series(dtype=float, index=df.index)
+
+    volume = pd.to_numeric(df['volume'], errors='coerce').fillna(0.0)
+    price = pd.to_numeric(df['vwap'], errors='coerce')
+    valid = (volume > 0) & price.notna()
+
+    if valid.any() and float(volume[valid].sum()) > 0:
+        value = float((price[valid] * volume[valid]).sum() / volume[valid].sum())
+    else:
+        value = float(df['close'].mean())
+    return pd.Series([value] * len(df), index=df.index, name='vwap_reference')
+
+
+def calc_atr_pct_from_ohlcv(df: pd.DataFrame, period: int = 14, freq: str = '1h') -> pd.Series:
+    """Compute ATR% from real candle high/low/close data."""
+    if df.empty:
+        return pd.Series(dtype=float, index=df.index, name='atr')
+
+    indexed = df.set_index('ts')
+    ohlc = indexed.resample(freq).agg({
+        'open': 'first',
+        'high': 'max',
+        'low': 'min',
+        'close': 'last',
+    }).dropna()
+    if ohlc.empty:
+        return pd.Series([np.nan] * len(df), index=df.index, name='atr')
+
+    prev_close = ohlc['close'].shift(1)
+    tr = pd.concat([
+        ohlc['high'] - ohlc['low'],
+        (ohlc['high'] - prev_close).abs(),
+        (ohlc['low'] - prev_close).abs(),
+    ], axis=1).max(axis=1)
+
+    atr = tr.ewm(span=period, adjust=False, min_periods=period).mean()
+    atr_pct = (atr / ohlc['close']) * 100.0
+    filled = atr_pct.reindex(indexed.index, method='ffill')
+    filled.name = 'atr'
+    return filled.reset_index(drop=True)
+
+
+def calc_theil_sen_slope(df: pd.DataFrame) -> float:
+    """Return robust Theil-Sen price slope in price units per second."""
+    t = (df['ts'] - df['ts'].iloc[0]).dt.total_seconds().to_numpy(dtype=float)
+    y = df['price'].to_numpy(dtype=float)
     n = len(t)
     if n < 2:
-        return (0.0, float(y[0]) if n==1 else 0.0)
+        return 0.0
 
-    slopes = []
-    for i in range(n-1):
-        for j in range(i+1,n):
-            dt = t[j] - t[i]
-            if dt != 0:
-                slopes.append( (y[j] - y[i]) / dt )
+    slope_chunks = []
+    for i in range(n - 1):
+        dt = t[i + 1:] - t[i]
+        valid = dt != 0
+        if np.any(valid):
+            slope_chunks.append((y[i + 1:][valid] - y[i]) / dt[valid])
 
-    slope = np.median(slopes)
-    intercepts = y - slope * t
-    intercept = np.median(intercepts)
-    return slope, intercept
-
-
-def calc_vwap(df: pd.DataFrame) -> pd.Series:
-    """
-    Volume-weighted average price over entire dataset.
-    If volume not provided, fallback to equal weighting => simple mean price.
-    Returns a single scalar repeated for each row.
-    """
-    valid_mask = ~df["volume"].isna() & (df["volume"]>0)
-    if valid_mask.sum() < 2:
-        # fallback
-        avgp = df["price"].mean()
-        return pd.Series([avgp]*len(df), index=df.index)
-
-    v_sum = df.loc[valid_mask, "volume"].sum()
-    pv_sum = (df["price"]*df["volume"]).loc[valid_mask].sum()
-    vwap_val = pv_sum / v_sum
-    return pd.Series([vwap_val]*len(df), index=df.index)
+    if not slope_chunks:
+        return 0.0
+    return float(np.median(np.concatenate(slope_chunks)))
 
 
-def calc_atr_pct_with_resample(df: pd.DataFrame, period: int = 14, freq: str = "2H") -> pd.Series:
-    """
-    Computes ATR(%) using OHLC bars resampled from raw price data.
-    Returns a Series of ATR% values (normalized by last close).
-    Each 5-min timestamp is forward-filled with the latest ATR%.
-    """
-    df = df.set_index("ts")
-
-    # Create OHLC bars
-    ohlc = df["price"].resample(freq).agg(["first", "max", "min", "last"]).dropna()
-    ohlc.columns = ["open", "high", "low", "close"]
-
-    # True Range
-    prev_close = ohlc["close"].shift(1).bfill() #fillna(method="bfill")
-    tr1 = ohlc["high"] - ohlc["low"]
-    tr2 = (ohlc["high"] - prev_close).abs()
-    tr3 = (ohlc["low"] - prev_close).abs()
-    tr = pd.concat([tr1, tr2, tr3], axis=1).max(axis=1)
-
-    # ATR in absolute units
-    atr = tr.ewm(span=period, adjust=False, min_periods=period).mean()
-
-    # Normalize to ATR%
-    atr_pct = (atr / ohlc["close"]) * 100
-
-    # Forward-fill to raw 5-min timestamps
-    atr_pct_filled = atr_pct.reindex(df.index, method="ffill")
-
-    # Reset index for consistency
-    atr_pct_filled.name = "atr"
-    return atr_pct_filled.reset_index(drop=True)
+def _window(df: pd.DataFrame, hours: float) -> pd.DataFrame:
+    if df.empty:
+        return df.copy()
+    cutoff = df['ts'].iloc[-1] - pd.Timedelta(hours=hours)
+    return df[df['ts'] >= cutoff].copy().reset_index(drop=True)
 
 
+def calc_efficiency_ratio(df: pd.DataFrame) -> float:
+    """Kaufman-style efficiency ratio in [0, 1]."""
+    if len(df) < 2:
+        return 0.0
+    prices = df['price'].to_numpy(dtype=float)
+    path = float(np.abs(np.diff(prices)).sum())
+    if path <= 0.0:
+        return 0.0
+    return float(min(1.0, max(0.0, abs(prices[-1] - prices[0]) / path)))
 
-###############################################################################
-# Example signals
-###############################################################################
-def detect_signals(df: pd.DataFrame, slope: float, intercept: float) -> dict:
+
+def calc_horizon_trends(df: pd.DataFrame, horizons=(1, 4, 24)) -> dict:
+    """Return robust trend information for several trailing windows."""
     out = {}
+    for hours in horizons:
+        window = _window(df, hours)
+        key = f'{hours}h'
+        if len(window) < 3:
+            out[key] = {
+                'samples': len(window),
+                'direction': 'UNKNOWN',
+                'slope_pct_hour': 0.0,
+                'slope_usd_hour': 0.0,
+            }
+            continue
 
-    last_price = df["price"].iloc[-1]
-    last_vwap = df["vwap"].iloc[-1]
-    last_atr_pct = df["atr"].iloc[-1]
+        slope_sec = calc_theil_sen_slope(window)
+        open_price = float(window['price'].iloc[0])
+        slope_hour = slope_sec * 3600.0
+        slope_pct_hour = slope_hour / open_price * 100.0 if open_price else 0.0
+        if slope_pct_hour > 0.05:
+            direction = 'UP'
+        elif slope_pct_hour < -0.05:
+            direction = 'DOWN'
+        else:
+            direction = 'FLAT'
 
-    # Mean reversion trigger
-    pct_diff = 100.0 * (last_price - last_vwap) / last_vwap
-    out["mean_reversion"] = abs(pct_diff) >= 1.0
-
-    # Momentum slope (Theil-Sen in %/h)
-    slope_hour = slope * 3600.0
-    open_price = df["price"].iloc[0]
-    slope_perc_hour = slope_hour / open_price * 100.0
-    out["momentum_filter"] = abs(slope_perc_hour) > 0.1
-
-    # Stop-loss (back to absolute ATR; here, just show placeholder or omit)
-    multiplier = 2.0  # how many ATR% to use
-    out["stop_loss"] = float(last_price * (1 - (last_atr_pct * multiplier) / 100.0)) #if pd.notna(last_atr) else None
-
-    # Volatility-aware position size from ATR%
-    # 0%   → max size (10)
-    # 2%+  → min size (1)
-    raw = 10.0 - last_atr_pct * 4.5  # shrink fast after 1%
-    out["position_size_multiplier"] = round(max(1.0, min(10.0, raw)), 2)
-
+        out[key] = {
+            'samples': len(window),
+            'direction': direction,
+            'slope_pct_hour': float(slope_pct_hour),
+            'slope_usd_hour': float(slope_hour),
+        }
     return out
 
 
-###############################################################################
-# Plot
-###############################################################################
+def analyze_data_quality(df: pd.DataFrame, now=None, expected_interval_seconds=60.0,
+                         horizon_hours=24.0) -> dict:
+    """Grade whether trailing history is complete and fresh enough for signals."""
+    if df.empty:
+        return {
+            'state': 'BAD', 'samples': 0, 'coverage': 0.0,
+            'max_gap_seconds': None, 'latest_age_seconds': None,
+        }
 
-def plot_price(df: pd.DataFrame, slope: float, intercept: float, outpath: pathlib.Path):
-    tsec = (df["ts"] - df["ts"].iloc[0]).dt.total_seconds().values
-    trend = intercept + slope * tsec
+    ts = pd.to_datetime(df['ts'], utc=True, errors='coerce').dropna().sort_values()
+    if ts.empty:
+        return {
+            'state': 'BAD', 'samples': 0, 'coverage': 0.0,
+            'max_gap_seconds': None, 'latest_age_seconds': None,
+        }
 
-    plt.figure(figsize=(10,4))
-    plt.plot(df["ts"], df["price"], label="Close price")
-    plt.plot(df["ts"], trend, "--", label="Theil-Sen trend")
-    if "vwap" in df.columns:
-        plt.plot(df["ts"], df["vwap"], label="VWAP")
+    expected = max(1.0, horizon_hours * 3600.0 / expected_interval_seconds)
+    coverage = min(1.0, len(ts) / expected)
+    if len(ts) >= 2:
+        gaps = ts.diff().dt.total_seconds().dropna()
+        max_gap = float(gaps.max()) if not gaps.empty else 0.0
+    else:
+        max_gap = None
 
-    plt.title("Coin Price + Theil-Sen Trend (5-min data)")
-    plt.xlabel("Time")
-    plt.ylabel("Price (USD)")
-    plt.legend()
-    plt.tight_layout()
-    plt.savefig(outpath, dpi=110)
-    plt.close()
+    now_ts = pd.Timestamp.now(tz='UTC') if now is None else pd.Timestamp(now)
+    if now_ts.tzinfo is None:
+        now_ts = now_ts.tz_localize('UTC')
+    else:
+        now_ts = now_ts.tz_convert('UTC')
+    latest_age = max(0.0, float((now_ts - ts.iloc[-1]).total_seconds()))
 
+    if coverage >= 0.80 and (max_gap is None or max_gap <= 300.0) and latest_age <= 180.0:
+        state = 'GOOD'
+    elif coverage >= 0.50 and (max_gap is None or max_gap <= 1800.0) and latest_age <= 900.0:
+        state = 'DEGRADED'
+    else:
+        state = 'BAD'
 
-###############################################################################
-# CLI
-###############################################################################
-
-def main():
-    ap = argparse.ArgumentParser(
-        description="Extended BTC script with Theil-Sen, VWAP, ATR (via resample), signals"
-    )
-    ap.add_argument("-f", "--file", type=pathlib.Path,
-                    help="JSON file; if omitted, read from stdin")
-    ap.add_argument("-o", "--output", default="btc_trend.png", type=pathlib.Path,
-                    help="Output PNG file name")
-    ap.add_argument("--summary-json", action="store_true",
-                    help="Emit machine-readable JSON summary")
-    ap.add_argument("--atr-freq", default="1h",
-                    help="What timeframe to resample for ATR. e.g. '1H','30Min','4H'")
-    args = ap.parse_args()
-
-    # 1) Load data
-    with (args.file.open() if args.file else sys.stdin) as f:
-        df = load_json(f)
-
-    df = convert_json(df)
-    if len(df) == 0:
-        print("No data found after parsing JSON.")
-        sys.exit(1)
-
-    # 2) Theil-Sen slope
-    slope_sec, intercept = calc_theil_sen(df)
-
-    # 3) VWAP on the entire 5-min data
-    df["vwap"] = calc_vwap(df)
-
-    # 4) ATR from resampled data
-    df["atr"] = calc_atr_pct_with_resample(df, period=14, freq=args.atr_freq)
-
-    # 5) Summaries
-    open_price = df["price"].iloc[0]
-    close_price = df["price"].iloc[-1]
-    pct_change = (close_price - open_price)/open_price * 100.0
-    min_idx = df["price"].idxmin()
-    max_idx = df["price"].idxmax()
-
-    slope_hour = slope_sec * 3600.0
-    slope_perc_hour = slope_hour / open_price * 100.0
-
-    summary = {
-        "open_price": float(open_price),
-        "close_price": float(close_price),
-        "min_price": float(df["price"].iloc[min_idx]),
-        "min_time": df["ts"].iloc[min_idx].isoformat(),
-        "max_price": float(df["price"].iloc[max_idx]),
-        "max_time": df["ts"].iloc[max_idx].isoformat(),
-        "percent_change": float(pct_change),
-        "theil_sen_slope_sec": float(slope_sec),
-        "theil_sen_slope_hour": float(slope_hour),
-        "theil_sen_slope_perc_hour": float(slope_perc_hour),
+    return {
+        'state': state,
+        'samples': int(len(ts)),
+        'coverage': float(coverage),
+        'max_gap_seconds': max_gap,
+        'latest_age_seconds': latest_age,
     }
 
-    # 6) Signals
-    signals = detect_signals(df, slope_sec, intercept)
 
-    # 7) Plot
-    plot_price(df, slope_sec, intercept, args.output)
+def classify_market_regime(efficiency_ratio: float, slope_pct_hour: float,
+                           atr_pct, data_quality_state='GOOD') -> dict:
+    if data_quality_state == 'BAD':
+        return {'structure': 'UNKNOWN', 'volatility': 'UNKNOWN', 'label': 'UNKNOWN'}
 
-    # 8) Output
-    if args.summary_json:
-        out_dict = {
-            "summary": summary,
-            "signals": signals
-        }
-        print(json.dumps(out_dict, indent=2))
+    if efficiency_ratio >= 0.55 and slope_pct_hour > 0.03:
+        structure = 'TRENDING_UP'
+    elif efficiency_ratio >= 0.55 and slope_pct_hour < -0.03:
+        structure = 'TRENDING_DOWN'
+    elif efficiency_ratio <= 0.35:
+        structure = 'RANGING'
     else:
-        txt = textwrap.dedent(f"""
-        Open price: ${summary['open_price']:.2f}
-        Close price: ${summary['close_price']:.2f}
-        Change: {summary['percent_change']:+.2f}%
+        structure = 'MIXED'
 
-        Day high: ${summary['max_price']:.2f}   ({summary['max_time']})
-        Day low:  ${summary['min_price']:.2f}   ({summary['min_time']})
+    if atr_pct is None or not np.isfinite(atr_pct):
+        volatility = 'UNKNOWN'
+    elif atr_pct >= 1.5:
+        volatility = 'VOLATILE'
+    elif atr_pct <= 0.25:
+        volatility = 'QUIET'
+    else:
+        volatility = 'NORMAL'
 
-        Theil-Sen slope/hour: {summary['theil_sen_slope_hour']:+.2f} USD/h
-                              ({summary['theil_sen_slope_perc_hour']:+.4f}%/h)
-
-        VWAP (full period):   ${df['vwap'].iloc[-1]:.2f}
-        Last ATR({args.atr_freq},14):  {df['atr'].iloc[-1]:.2f}%
-
-        Signals:
-          mean_reversion = {signals['mean_reversion']}
-          momentum_filter = {signals['momentum_filter']}
-          stop_loss = {signals['stop_loss']}
-          position_size_multiplier = {signals['position_size_multiplier']}
-
-        Plot saved to: {args.output}
-        """).strip()
-        print(txt)
+    return {
+        'structure': structure,
+        'volatility': volatility,
+        'label': f'{structure}/{volatility}',
+    }
 
 
-if __name__ == "__main__":
-    main()
+def detect_signals(df: pd.DataFrame, horizons=None, data_quality=None) -> dict:
+    """Build directional, volatility-normalized market signals from OHLCV data."""
+    last_price = float(df['price'].iloc[-1])
+    reference_price = float(df['vwap_reference'].iloc[-1])
+    atr_value = float(df['atr'].iloc[-1])
+    atr_pct = atr_value if np.isfinite(atr_value) else None
+
+    horizons = horizons or calc_horizon_trends(df)
+    quality = data_quality or {'state': 'GOOD'}
+    slope_24_pct = float(horizons.get('24h', {}).get('slope_pct_hour', 0.0))
+    efficiency_ratio = calc_efficiency_ratio(df)
+    regime = classify_market_regime(
+        efficiency_ratio, slope_24_pct, atr_pct, quality.get('state', 'GOOD')
+    )
+
+    deviation_pct = 100.0 * (last_price - reference_price) / reference_price
+    if atr_pct is None or atr_pct <= 1e-12:
+        deviation_atr = None
+        candidate = 'NONE'
+    else:
+        deviation_atr = deviation_pct / atr_pct
+        if deviation_atr <= -1.5:
+            candidate = 'BUY'
+        elif deviation_atr >= 1.5:
+            candidate = 'SELL'
+        else:
+            candidate = 'NONE'
+
+    slope_1_pct = float(horizons.get('1h', {}).get('slope_pct_hour', 0.0))
+    if slope_1_pct > 0.1:
+        momentum = 'UP'
+    elif slope_1_pct < -0.1:
+        momentum = 'DOWN'
+    else:
+        momentum = 'FLAT'
+
+    momentum_blocked = (
+        (candidate == 'BUY' and momentum == 'DOWN') or
+        (candidate == 'SELL' and momentum == 'UP')
+    )
+    structure = regime['structure']
+    regime_blocked = (
+        (candidate == 'BUY' and structure == 'TRENDING_DOWN') or
+        (candidate == 'SELL' and structure == 'TRENDING_UP')
+    )
+
+    if atr_pct is None:
+        signal_filter = 'ATR_UNAVAILABLE'
+        mean_reversion = 'NONE'
+    elif candidate == 'NONE':
+        signal_filter = 'N/A'
+        mean_reversion = 'NONE'
+    elif quality.get('state') == 'BAD':
+        signal_filter = 'DATA_QUALITY_BLOCKED'
+        mean_reversion = 'NONE'
+    elif momentum_blocked:
+        signal_filter = 'MOMENTUM_BLOCKED'
+        mean_reversion = 'NONE'
+    elif regime_blocked:
+        signal_filter = 'REGIME_BLOCKED'
+        mean_reversion = 'NONE'
+    else:
+        signal_filter = 'PASS'
+        mean_reversion = candidate
+
+    slope_4_pct = float(horizons.get('4h', {}).get('slope_pct_hour', 0.0))
+    acceleration = slope_1_pct - slope_4_pct
+    if acceleration > 0.05:
+        acceleration_state = 'ACCELERATING_UP'
+    elif acceleration < -0.05:
+        acceleration_state = 'ACCELERATING_DOWN'
+    else:
+        acceleration_state = 'STABLE'
+
+    directions = [horizons.get(k, {}).get('direction', 'UNKNOWN') for k in ('1h', '4h', '24h')]
+    if quality.get('state') == 'BAD':
+        assessment = 'INSUFFICIENT_DATA'
+    elif mean_reversion == 'BUY' and horizons.get('4h', {}).get('direction') == 'UP' and horizons.get('24h', {}).get('direction') == 'UP':
+        assessment = 'BUY_PULLBACK'
+    elif mean_reversion == 'SELL' and horizons.get('4h', {}).get('direction') == 'DOWN' and horizons.get('24h', {}).get('direction') == 'DOWN':
+        assessment = 'SELL_RALLY'
+    elif mean_reversion == 'BUY':
+        assessment = 'MEAN_REVERSION_BUY'
+    elif mean_reversion == 'SELL':
+        assessment = 'MEAN_REVERSION_SELL'
+    elif directions == ['UP', 'UP', 'UP']:
+        assessment = 'TREND_UP'
+    elif directions == ['DOWN', 'DOWN', 'DOWN']:
+        assessment = 'TREND_DOWN'
+    else:
+        assessment = 'NEUTRAL'
+
+    if atr_pct is not None:
+        raw_size = 10.0 - atr_pct * 4.5
+        position_size_multiplier = round(max(1.0, min(10.0, raw_size)), 2)
+    else:
+        position_size_multiplier = None
+
+    return {
+        'reference_name': 'VWAP',
+        'reference_price': reference_price,
+        'reference_deviation_pct': float(deviation_pct),
+        'reference_deviation_atr': float(deviation_atr) if deviation_atr is not None else None,
+        'mean_reversion_candidate': candidate,
+        'momentum': momentum,
+        'momentum_pct_hour': slope_1_pct,
+        'signal_filter': signal_filter,
+        'mean_reversion': mean_reversion,
+        'efficiency_ratio': float(efficiency_ratio),
+        'market_regime': regime,
+        'horizons': horizons,
+        'slope_acceleration_pct_hour': float(acceleration),
+        'slope_acceleration': acceleration_state,
+        'assessment': assessment,
+        'data_quality': quality,
+        'atr_pct': atr_pct,
+        'position_size_multiplier': position_size_multiplier,
+    }
